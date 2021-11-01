@@ -5,9 +5,15 @@ const prisma = new PrismaClient();
 
 export const router = Router();
 router.post("/", async (req, res) => {
-  //req.body stuff
   const { code, destinationURL } = req.body;
-  //do stuff in the database
+
+  const urlRegex =
+    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+  const regex = new RegExp(urlRegex);
+
+  if (!destinationURL.match(regex)) {
+    res.status(400).send("Invalid URL");
+  }
 
   try {
     const result = await prisma.link.create({
