@@ -26,9 +26,16 @@ func main() {
 
 	jsonData := map[string]string{"code": *code, "destinationURL": *link}
 
-	jsonValue, _ := json.Marshal(jsonData)
+	jsonValue, err := json.Marshal(jsonData)
 
-	request, _ := http.NewRequest("POST", "http://localhost:5000/create", bytes.NewBuffer(jsonValue))
+	if err != nil {
+		panic(err)
+	}
+
+	request, err := http.NewRequest("POST", "http://localhost:5000/create", bytes.NewBuffer(jsonValue))
+	if err != nil {
+		panic(err)
+	}
 	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -37,9 +44,11 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		fmt.Println(string(data))
 	}
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(data))
 
 }
